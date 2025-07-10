@@ -12,6 +12,10 @@ class Premiacao (models.Model):
         verbose_name_plural = 'Premiações'
         ordering = ['valor']
 
+    def __str__(self):
+        jogo = JogoLoteria.objects.filter(premiacoes=self).first()
+        return f"Premiação {jogo.nome} - {self.numeros} números: {self.valor} {'(Fixo)' if self.fixo else ''} {'(Percentual)' if self.percentual else ''}"
+
 # Create your models here.
 class JogoLoteria(models.Model):
     
@@ -22,6 +26,7 @@ class JogoLoteria(models.Model):
     premiacoes = models.ManyToManyField(Premiacao, related_name='jogos', blank=True)
     data_criacao = models.DateTimeField(auto_now_add=True)
     data_atualizacao = models.DateTimeField(auto_now=True)
+    premio_bruto = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
 
     def __str__(self):
         return self.nome
